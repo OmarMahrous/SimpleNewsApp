@@ -1,4 +1,4 @@
-package com.itworxeducation.simplenewsapp.ui.util
+package com.itworxeducation.simplenewsapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

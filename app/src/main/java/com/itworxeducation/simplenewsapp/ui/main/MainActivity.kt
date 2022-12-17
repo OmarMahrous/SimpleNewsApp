@@ -11,7 +11,7 @@ import com.itworxeducation.simplenewsapp.data.source.remote.ApiGenerator
 import com.itworxeducation.simplenewsapp.data.source.remote.onboarding.OnboardingSourcesApi
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.GetSourcesEvent
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.SourcesViewModel
-import com.itworxeducation.simplenewsapp.ui.util.ViewModelFactory
+import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
