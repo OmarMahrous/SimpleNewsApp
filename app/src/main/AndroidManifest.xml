@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.itworxeducation.simplenewsapp">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".NewsApplication"
         android:allowBackup="true"
@@ -16,7 +18,7 @@
         android:theme="@style/Theme.SimpleNewsApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
