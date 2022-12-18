@@ -1,31 +1,32 @@
-package com.itworxeducation.simplenewsapp.ui.onboarding_sources.countries
+package com.itworxeducation.simplenewsapp.ui.onboarding_sources.categories
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.itworxeducation.simplenewsapp.R
-import com.itworxeducation.simplenewsapp.databinding.FragmentCountriesBinding
+import com.itworxeducation.simplenewsapp.data.model.Category
+import com.itworxeducation.simplenewsapp.databinding.FragmentCategoriesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.GetSourcesEvent
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.SourcesViewModel
+import com.itworxeducation.simplenewsapp.ui.onboarding_sources.countries.CountriesFragmentDirections
 import com.itworxeducation.simplenewsapp.ui.util.ListMapper
 
+class CategoriesFragment: BaseFragment(R.layout.fragment_categories),
+    CategoriesAdapter.IOnItemClickListener {
 
-class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
-
-    private val TAG = "CountriesFragment"
+    private val TAG = "CategoriesFragment"
 
     private val viewModel: SourcesViewModel by activityViewModels()
 
 
-    private var _binding: FragmentCountriesBinding? =null
-    private val binding: FragmentCountriesBinding get() =_binding!!
+    private var _binding: FragmentCategoriesBinding? =null
+    private val binding: FragmentCategoriesBinding get() =_binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +34,7 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentCountriesBinding.inflate(inflater, container, false)
+        _binding = FragmentCategoriesBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -44,7 +45,7 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
         getCountries()
 
         binding.submitBtn.setOnClickListener {
-            validateCountrySelection()
+//            validateCountrySelection()
         }
     }
 
@@ -56,9 +57,9 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
                     is GetSourcesEvent.GetDataOnSuccess ->{
                         Log.i(TAG, "onViewCreated: sources size = ${event.sourceList.size}")
 
-                        val countryList = ListMapper.countriesFromSources(event.sourceList)
+                        val categoryList = ListMapper.categoriesFromSources(event.sourceList)
 
-                        updateDropdownUiComponent(countryList)
+                        updateUiListComponent(categoryList)
                     }
                     is GetSourcesEvent.ShowMessageOnError ->
                         Log.e(TAG, "onViewCreated: fail to load sources ${event.msg}")
@@ -70,18 +71,18 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
 
     }
 
-    private fun validateCountrySelection(){
-        val selectedCountry = binding.countriesAutocompleteTextview.text.toString()
+//    private fun validateCountrySelection(){
+//        val selectedCountry = binding.countriesAutocompleteTextview.text.toString()
+//
+//        if (selectedCountry.isEmpty()){
+//            showFieldErrorMessage("Please select your country !")
+//            return
+//        }
+//
+//        navigateToArticlesPage(selectedCountry)
+//    }
 
-        if (selectedCountry.isEmpty()){
-            showFieldErrorMessage("Please select your country !")
-            return
-        }
-
-        navigateToCategoriesPage(selectedCountry)
-    }
-
-    private fun navigateToCategoriesPage(selectedCountry: String) {
+    private fun navigateToArticlesPage(selectedCountry: String) {
 
         val message = getString(R.string.select_country_confirm) + " $selectedCountry ?"
 
@@ -95,20 +96,25 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
 
 
 
-    private fun updateDropdownUiComponent(countryList: List<String>) {
-        val adapter: ArrayAdapter<String>? = context?.let {
-            ArrayAdapter<String>(
-                it,
-                android.R.layout.simple_spinner_dropdown_item,
-                countryList
-            )
+    private fun updateUiListComponent(categoryList: List<Category>) {
+        Log.d(TAG, "updateUiListComponent: list size = ${categoryList.size}")
+
+        binding.categoriesRecyclerview.apply {
+            if (adapter==null)
+                adapter = CategoriesAdapter(categoryList, this@CategoriesFragment)
+
+            (adapter as CategoriesAdapter).submitNewData(categoryList)
+
         }
 
-        binding.countriesAutocompleteTextview.setAdapter(adapter)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemClick(category: Category) {
+
     }
 }

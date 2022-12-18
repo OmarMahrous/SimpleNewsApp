@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import com.itworxeducation.simplenewsapp.R
 
 /**
@@ -47,10 +48,15 @@ class ConfirmSelectionDialogFragment  : DialogFragment() {
                 getString(R.string.yes)
             ) { dialog, which ->
                 when(selectionName){
-                    "country"->{}
+                    "country"->{navigateToCategoriesPage()}
                     else ->{}
                 }
             }.create()
+
+    private fun navigateToCategoriesPage() {
+        val action = ConfirmSelectionDialogFragmentDirections.actionConfirmationDialogfragmentToCategoriesFragment()
+        findNavController().navigate(action)
+    }
 
 }
 

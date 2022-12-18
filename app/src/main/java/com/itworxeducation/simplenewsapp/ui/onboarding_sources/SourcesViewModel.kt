@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.itworxeducation.simplenewsapp.data.model.OnboardingSource
 import com.itworxeducation.simplenewsapp.data.repository.OnboardingSourcesRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,8 +17,8 @@ class SourcesViewModel constructor(
     : ViewModel(){
 
 
-    private val getSourcesChannel = Channel<GetSourcesEvent>()
-    val getSourcesFlow = getSourcesChannel.receiveAsFlow()
+    private val _sourcesEvents = MutableSharedFlow<GetSourcesEvent>(replay = 1)
+    val sourcesEvents = _sourcesEvents.asSharedFlow() // read-only public view
 
     fun getSources(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -40,15 +42,15 @@ class SourcesViewModel constructor(
     }
 
     private suspend fun showLoading(){
-        getSourcesChannel.send(GetSourcesEvent.ShowProgressOnLoading)
+        _sourcesEvents.emit(GetSourcesEvent.ShowProgressOnLoading)
     }
 
     private suspend fun showErrorMessage( msg:String){
-        getSourcesChannel.send(GetSourcesEvent.ShowMessageOnError(msg))
+        _sourcesEvents.emit(GetSourcesEvent.ShowMessageOnError(msg))
     }
 
     private suspend fun getData(sourceList: List<OnboardingSource>){
-        getSourcesChannel.send(GetSourcesEvent.GetDataOnSuccess(sourceList))
+        _sourcesEvents.emit(GetSourcesEvent.GetDataOnSuccess(sourceList))
     }
 
 }
