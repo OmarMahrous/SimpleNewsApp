@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SimpleNewsApp</string>
+    <string name="submit">Submit</string>
+    <string name="countries_page_title">Countries</string>
+    <string name="select_your_country">Select your favorite country</string>
+    <string name="dialog_title">Confirm selection</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="select_country_confirm">"Are you sure to select "</string>
 </resources>

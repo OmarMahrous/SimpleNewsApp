@@ -19,6 +19,7 @@ class MainViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             preferencesManager.setIsCalledFirstTime(isCalledFirstTime)
         }
+
     }
 
     suspend fun isCalledFirstTime(): Boolean {

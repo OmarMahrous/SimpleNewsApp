@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/countries_fragment">
+
+
+    <fragment
+        android:id="@+id/countries_fragment"
+        android:name="com.itworxeducation.simplenewsapp.ui.onboarding_sources.countries.CountriesFragment"
+        android:label="@string/countries_page_title"
+        tools:layout="@layout/fragment_countries">
+        <action android:id="@+id/action_countriesFragment_to_confirmationDialogFragment"
+            app:destination="@id/confirmation_dialogfragment"/>
+    </fragment>
+
+    <dialog
+        android:id="@+id/confirmation_dialogfragment"
+        android:name="com.itworxeducation.simplenewsapp.ui.onboarding_sources.ConfirmSelectionDialogFragment"
+        android:label="ConfirmationDialogFragment">
+
+        <argument android:name="dialogMessage"
+            app:nullable="false"
+            app:argType="string" />
+        <argument android:name="selectionName"
+            app:argType="string"
+            android:defaultValue="country"/>
+
+    </dialog>
+
+</navigation>
