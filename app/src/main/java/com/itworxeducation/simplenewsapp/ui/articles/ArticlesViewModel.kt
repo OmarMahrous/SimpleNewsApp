@@ -1,5 +1,8 @@
 package com.itworxeducation.simplenewsapp.ui.articles
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itworxeducation.simplenewsapp.data.model.Article
@@ -10,9 +13,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ArticlesViewModel(
+class ArticlesViewModel constructor(
     private val articlesRepository: ArticlesRepository
 ) : ViewModel() {
+
+    private val state = SavedStateHandle()
+
+    val searchQuery = state.getLiveData("searchQuery", "")
 
     private val _articlesChannelEvent = Channel<GetArticlesEvent>()
     val articlesFlowEvent = _articlesChannelEvent.receiveAsFlow() // read-only public view

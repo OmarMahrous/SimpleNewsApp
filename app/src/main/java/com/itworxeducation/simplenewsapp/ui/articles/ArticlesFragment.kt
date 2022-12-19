@@ -2,12 +2,10 @@ package com.itworxeducation.simplenewsapp.ui.articles
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Article
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
@@ -16,7 +14,7 @@ import com.itworxeducation.simplenewsapp.data.source.remote.articles.ArticlesApi
 import com.itworxeducation.simplenewsapp.databinding.FragmentArticlesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
-import com.itworxeducation.simplenewsapp.ui.onboarding_sources.categories.CategoriesAdapter
+import com.itworxeducation.simplenewsapp.ui.util.search.onQueryTextChanged
 
 class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
 
@@ -37,6 +35,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
     ): View? {
 
         _binding = FragmentArticlesBinding.inflate(inflater, container, false)
+setHasOptionsMenu(true)
 
         initRecyclerView()
 
@@ -44,6 +43,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
         val articlesRepository = ArticlesRepository(articlesApi)
 
         fetchArticles(articlesRepository)
+
 
         return binding.root
     }
@@ -57,6 +57,28 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
         super.onViewCreated(view, savedInstanceState)
 
         observeDataResult()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_articles, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        validateSearchInput(searchItem, searchView)
+    }
+
+    private fun validateSearchInput(searchItem: MenuItem, searchView: SearchView) {
+        val pendingQuery = viewModel?.searchQuery?.value
+
+        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+        }
+
+        searchView.onQueryTextChanged {
+            viewModel?.searchQuery?.value = it
+        }
     }
 
     private fun fetchArticles(articlesRepository: ArticlesRepository) {
