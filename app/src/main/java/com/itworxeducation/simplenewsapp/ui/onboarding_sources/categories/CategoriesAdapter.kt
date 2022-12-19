@@ -1,17 +1,26 @@
 package com.itworxeducation.simplenewsapp.ui.onboarding_sources.categories
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Category
 import com.itworxeducation.simplenewsapp.databinding.CategoryListItemBinding
 
 class CategoriesAdapter(
-    var categoryList:List<Category>,
-    private val listener: IOnItemClickListener
-    ) : RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>() {
+    ) : ListAdapter<Category, CategoriesAdapter.CategoriesViewHolder>(DiffCallback()) {
+
+    private  val TAG = "CategoriesAdapter"
+
+
 
     inner class CategoriesViewHolder(val binding: CategoryListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -19,13 +28,7 @@ class CategoriesAdapter(
         init {
             binding.apply {
 
-//                root.setOnClickListener {
-//                    val position = adapterPosition
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        val task = getItem(position)
-//                        listener.onItemClick(task)
-//                    }
-//                }
+
 
 //                completedCheckbox.setOnClickListener {
 //                    val position = adapterPosition
@@ -47,6 +50,31 @@ class CategoriesAdapter(
             }
         }
 
+
+    }
+
+
+
+    private fun updateSelectedView(binding: CategoryListItemBinding, position: Int) {
+        val category = getItem(position)
+
+        category.isSelected = !category.isSelected
+
+        if (category.isSelected)
+            binding.categoryImage.setImageResource(R.drawable.ic_selected)
+        else
+            binding.categoryImage.setImageResource(category.image)
+
+    }
+
+    fun getSelectedItems():List<Category>{
+        val selectedList = mutableListOf<Category>()
+
+        for (category in currentList){
+            if (category.isSelected)
+                selectedList.add(category)
+        }
+        return selectedList.toList()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
@@ -57,45 +85,32 @@ class CategoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
-        val currentItem = categoryList[position]
+        val currentItem = getItem(position)
         holder.bind(currentItem)
+
+        holder.itemView.setOnClickListener {
+            updateSelectedView(holder.binding,position)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return categoryList.size
+
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
 
+    class DiffCallback : DiffUtil.ItemCallback<Category>() {
+        override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    fun submitNewData(newList: List<Category>) {
-
-        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return categoryList[oldItemPosition] == newList[newItemPosition]
-            }
-
-            override fun getOldListSize(): Int {
-                return categoryList.size
-            }
-
-            override fun getNewListSize(): Int {
-                return newList.size
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return categoryList[oldItemPosition] == newList[newItemPosition]
-            }
-        })
-        categoryList = newList.toMutableList()
-
-        diffResult.dispatchUpdatesTo(this)
-
-
+        override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+            return oldItem == newItem
+        }
     }
 
-    interface IOnItemClickListener {
-        fun onItemClick(category: Category)
-    }
+
 
 }
+

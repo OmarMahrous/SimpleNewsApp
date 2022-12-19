@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Category
 import com.itworxeducation.simplenewsapp.databinding.FragmentCategoriesBinding
@@ -17,8 +19,7 @@ import com.itworxeducation.simplenewsapp.ui.onboarding_sources.SourcesViewModel
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.countries.CountriesFragmentDirections
 import com.itworxeducation.simplenewsapp.ui.util.ListMapper
 
-class CategoriesFragment: BaseFragment(R.layout.fragment_categories),
-    CategoriesAdapter.IOnItemClickListener {
+class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
 
     private val TAG = "CategoriesFragment"
 
@@ -28,29 +29,40 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories),
     private var _binding: FragmentCategoriesBinding? =null
     private val binding: FragmentCategoriesBinding get() =_binding!!
 
+    private var listAdapter:CategoriesAdapter?=null
+    private var maxSelection = 3
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+
         _binding = FragmentCategoriesBinding.inflate(inflater, container, false)
 
+        initRecyclerView()
+
         return binding.root
+    }
+
+    private fun initRecyclerView() {
+        listAdapter = CategoriesAdapter()
+        binding.categoriesRecyclerview.adapter = listAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getCountries()
+        getCategories()
+
 
         binding.submitBtn.setOnClickListener {
-//            validateCountrySelection()
+            validateCategorySelection()
         }
     }
 
-
-    private fun getCountries() {
+    private fun getCategories() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.sourcesEvents.collect{ event->
                 when(event){
@@ -71,41 +83,40 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories),
 
     }
 
-//    private fun validateCountrySelection(){
-//        val selectedCountry = binding.countriesAutocompleteTextview.text.toString()
-//
-//        if (selectedCountry.isEmpty()){
-//            showFieldErrorMessage("Please select your country !")
-//            return
-//        }
-//
-//        navigateToArticlesPage(selectedCountry)
-//    }
 
-    private fun navigateToArticlesPage(selectedCountry: String) {
 
-        val message = getString(R.string.select_country_confirm) + " $selectedCountry ?"
 
-        val action = CountriesFragmentDirections.actionCountriesFragmentToConfirmationDialogFragment(
-            message, "country"
+
+    private fun validateCategorySelection(){
+        val selectedCategoryList = listAdapter?.getSelectedItems()
+
+        if (selectedCategoryList?.size!! <= maxSelection)
+            navigateToConfirmationDialogPage(selectedCategoryList)
+        else
+            Toast.makeText(context, getString(R.string.select_limit_error), Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun navigateToConfirmationDialogPage(selectedCategoryList: List<Category>) {
+
+        val message = getString(R.string.select_categories_confirm)
+
+        val action = CategoriesFragmentDirections.actionCategoriesFragmentToConfirmationDialogFragment(
+            message, "category"
         )
 
         findNavController().navigate(action)
     }
 
-
-
-
     private fun updateUiListComponent(categoryList: List<Category>) {
-        Log.d(TAG, "updateUiListComponent: list size = ${categoryList.size}")
-
         binding.categoriesRecyclerview.apply {
             if (adapter==null)
-                adapter = CategoriesAdapter(categoryList, this@CategoriesFragment)
+                adapter = listAdapter
 
-            (adapter as CategoriesAdapter).submitNewData(categoryList)
+            listAdapter?.submitList(categoryList)
 
         }
+
 
     }
 
@@ -114,7 +125,4 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories),
         _binding = null
     }
 
-    override fun onItemClick(category: Category) {
-
-    }
 }
