@@ -1,4 +1,4 @@
-package com.itworxeducation.simplenewsapp.ui.onboarding_sources
+package com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dialog
 
 import android.app.Dialog
 import android.os.Bundle

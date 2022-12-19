@@ -85,8 +85,6 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
 
 
 
-
-
     private fun validateCategorySelection(){
         val selectedCategoryList = listAdapter?.getSelectedItems()
 

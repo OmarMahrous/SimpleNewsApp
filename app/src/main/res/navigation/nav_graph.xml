@@ -17,7 +17,7 @@
 
     <dialog
         android:id="@+id/confirmation_dialogfragment"
-        android:name="com.itworxeducation.simplenewsapp.ui.onboarding_sources.ConfirmSelectionDialogFragment"
+        android:name="com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dialog.ConfirmSelectionDialogFragment"
         android:label="ConfirmationDialogFragment">
 
         <argument android:name="dialogMessage"
