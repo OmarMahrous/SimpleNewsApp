@@ -49,12 +49,19 @@ class ConfirmSelectionDialogFragment  : DialogFragment() {
             ) { dialog, which ->
                 when(selectionName){
                     "country"->{navigateToCategoriesPage()}
-                    else ->{}
+                    else ->{ navigateToArticlesPage() }
                 }
             }.create()
 
+
+
     private fun navigateToCategoriesPage() {
         val action = ConfirmSelectionDialogFragmentDirections.actionConfirmationDialogfragmentToCategoriesFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToArticlesPage() {
+        val action = ConfirmSelectionDialogFragmentDirections.actionConfirmationDialogfragmentToArticlesFragment()
         findNavController().navigate(action)
     }
 

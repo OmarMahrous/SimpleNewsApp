@@ -30,6 +30,9 @@
         <action android:id="@+id/action_confirmation_dialogfragment_to_categoriesFragment"
             app:destination="@id/categories_fragment"/>
 
+        <action android:id="@+id/action_confirmation_dialogfragment_to_articlesFragment"
+            app:destination="@id/articles_fragment"/>
+
 
     </dialog>
 
@@ -40,6 +43,14 @@
         tools:layout="@layout/fragment_categories">
         <action android:id="@+id/action_categoriesFragment_to_confirmationDialogFragment"
             app:destination="@id/confirmation_dialogfragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/articles_fragment"
+        android:name="com.itworxeducation.simplenewsapp.ui.articles.ArticlesFragment"
+        android:label="@string/articles"
+        tools:layout="@layout/fragment_articles">
+
     </fragment>
 
 

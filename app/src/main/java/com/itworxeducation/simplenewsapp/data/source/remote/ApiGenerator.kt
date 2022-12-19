@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiGenerator {
 
-    private val BASE_URL = "https://newsapi.org/v2/top-headlines/"
+    private val BASE_URL = "https://newsapi.org/v2/"
 
     fun <T> setupBaseApi(apiClass: Class<T>): T {
 

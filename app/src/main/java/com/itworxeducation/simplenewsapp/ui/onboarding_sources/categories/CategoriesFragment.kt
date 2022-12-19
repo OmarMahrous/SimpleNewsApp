@@ -9,14 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Category
 import com.itworxeducation.simplenewsapp.databinding.FragmentCategoriesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.GetSourcesEvent
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.SourcesViewModel
-import com.itworxeducation.simplenewsapp.ui.onboarding_sources.countries.CountriesFragmentDirections
 import com.itworxeducation.simplenewsapp.ui.util.ListMapper
 
 class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
@@ -91,7 +89,7 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
         if (selectedCategoryList?.size!! <= maxSelection)
             navigateToConfirmationDialogPage(selectedCategoryList)
         else
-            Toast.makeText(context, getString(R.string.select_limit_error), Toast.LENGTH_SHORT).show()
+            showFieldErrorMessage(getString(R.string.select_limit_error))
 
     }
 

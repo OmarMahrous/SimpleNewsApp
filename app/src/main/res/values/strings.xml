@@ -14,4 +14,5 @@
     <string name="select_categories_confirm">"Are you sure to select these categories ?"</string>
     <string name="select_limit_error">"Can't select more than 3 categories"</string>
     <string name="confirm">Confirm</string>
+    <string name="articles">Articles</string>
 </resources>
