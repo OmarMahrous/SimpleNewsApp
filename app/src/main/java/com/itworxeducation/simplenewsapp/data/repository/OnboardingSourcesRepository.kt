@@ -4,5 +4,6 @@ import com.itworxeducation.simplenewsapp.data.source.remote.ApiUtil
 import com.itworxeducation.simplenewsapp.data.source.remote.onboarding.OnboardingSourcesApi
 
 class OnboardingSourcesRepository constructor(private val onboardingSourcesApi: OnboardingSourcesApi){
-    suspend fun getSources() = onboardingSourcesApi.getSources(ApiUtil.API_KEY)
+    suspend fun getSources() = onboardingSourcesApi.getSources(ApiUtil.API_KEY,
+    ApiUtil.APP_LANGUAGE)
 }

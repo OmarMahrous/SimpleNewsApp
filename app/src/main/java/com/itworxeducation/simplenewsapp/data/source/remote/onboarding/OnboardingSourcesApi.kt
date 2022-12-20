@@ -9,6 +9,7 @@ import retrofit2.http.Query
 interface OnboardingSourcesApi {
 
     @GET("top-headlines/sources")
-    suspend fun getSources(@Query("apiKey")apiKey:String) : Response<SourcesResponse>
+    suspend fun getSources(@Query("apiKey")apiKey:String,
+    @Query("language")appLang:String) : Response<SourcesResponse>
 
 }
