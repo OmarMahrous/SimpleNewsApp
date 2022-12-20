@@ -74,7 +74,7 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
         val selectedCountry = binding.countriesAutocompleteTextview.text.toString()
 
         if (selectedCountry.isEmpty()){
-            showFieldErrorMessage("Please select your country !")
+            showFieldErrorMessage(getString(R.string.empty_country_selection_error))
             return
         }
 

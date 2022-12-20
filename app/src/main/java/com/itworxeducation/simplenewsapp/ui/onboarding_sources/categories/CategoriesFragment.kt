@@ -85,8 +85,9 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
 
     private fun validateCategorySelection(){
         val selectedCategoryList = listAdapter?.getSelectedItems()
-
-        if (selectedCategoryList?.size!! <= maxSelection)
+        if (selectedCategoryList?.isEmpty() == true)
+            showFieldErrorMessage(getString(R.string.empty_category_selection_error))
+        else if (selectedCategoryList?.size!! <= maxSelection)
             navigateToConfirmationDialogPage(selectedCategoryList)
         else
             showFieldErrorMessage(getString(R.string.select_limit_error))

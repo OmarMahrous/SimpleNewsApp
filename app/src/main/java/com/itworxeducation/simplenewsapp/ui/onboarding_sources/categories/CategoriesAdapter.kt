@@ -1,13 +1,7 @@
 package com.itworxeducation.simplenewsapp.ui.onboarding_sources.categories
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -41,10 +35,18 @@ class CategoriesAdapter(
             }
         }
 
-        fun bind(category: Category) {
+        fun bind(category: Category, position: Int) {
             binding.apply {
                 categoryName.text = category.name
                 categoryImage.setImageResource(category.image)
+
+                categoryCardView.setOnClickListener {
+                    updateSelectedView(this,position)
+                }
+
+                categoryName.setOnClickListener {
+                    updateSelectedView(this,position)
+                }
 
                 executePendingBindings()
             }
@@ -86,11 +88,8 @@ class CategoriesAdapter(
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         val currentItem = getItem(position)
-        holder.bind(currentItem)
+        holder.bind(currentItem, position)
 
-        holder.itemView.setOnClickListener {
-            updateSelectedView(holder.binding,position)
-        }
     }
 
 
