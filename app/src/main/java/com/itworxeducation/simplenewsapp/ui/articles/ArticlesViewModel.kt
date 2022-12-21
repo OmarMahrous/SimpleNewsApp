@@ -24,11 +24,11 @@ class ArticlesViewModel constructor(
     private val _articlesChannelEvent = Channel<GetArticlesEvent>()
     val articlesFlowEvent = _articlesChannelEvent.receiveAsFlow() // read-only public view
 
-    fun getArticles(category: String="", country:String){
+    fun getArticles(category: String="", country:String, searchQuery:String?){
         viewModelScope.launch(Dispatchers.IO) {
             showLoading()
 
-            val response = articlesRepository.getArticles(category, country)
+            val response = articlesRepository.getArticles(category, country,searchQuery)
             withContext(Dispatchers.Main){
                 if (response.isSuccessful){
                     val articlesResponse = response.body()

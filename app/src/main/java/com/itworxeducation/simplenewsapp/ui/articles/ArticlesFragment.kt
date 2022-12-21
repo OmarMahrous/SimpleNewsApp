@@ -15,6 +15,7 @@ import com.itworxeducation.simplenewsapp.databinding.FragmentArticlesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
 import com.itworxeducation.simplenewsapp.ui.util.search.onQueryTextChanged
+import kotlinx.coroutines.delay
 
 class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
 
@@ -42,8 +43,8 @@ setHasOptionsMenu(true)
         val articlesApi = ApiGenerator.setupBaseApi(ArticlesApi::class.java)
         val articlesRepository = ArticlesRepository(articlesApi)
 
-        fetchArticles(articlesRepository)
-
+        initViewModel(articlesRepository)
+        viewModel?.getArticles(country = "us", searchQuery = null)
 
         return binding.root
     }
@@ -82,12 +83,22 @@ setHasOptionsMenu(true)
 
         searchView.onQueryTextChanged {
             viewModel?.searchQuery?.value = it
+
+            getArticlesBySearch(it)
         }
     }
 
-    private fun fetchArticles(articlesRepository: ArticlesRepository) {
+    private fun getArticlesBySearch(query: String) {
+        lifecycleScope.launchWhenStarted {
+            delay(2000)
+
+            viewModel?.getArticles(country = "us", searchQuery = query)
+        }
+    }
+
+    private fun initViewModel(articlesRepository: ArticlesRepository) {
+
         viewModel = ViewModelProvider(this, ViewModelFactory(articlesRepository))[ArticlesViewModel::class.java]
-        viewModel?.getArticles(country = "us")
     }
 
     private fun observeDataResult(){
