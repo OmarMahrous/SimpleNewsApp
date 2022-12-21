@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.databinding.FragmentCategoriesBinding
@@ -97,8 +98,10 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
 
         val message = getString(R.string.select_categories_confirm)
 
+        val listGson = Gson().toJson(selectedCategoryList)
+
         val action = CategoriesFragmentDirections.actionCategoriesFragmentToConfirmationDialogFragment(
-            message, "category"
+            message, "category", selectedCategoryList = listGson
         )
 
         findNavController().navigate(action)

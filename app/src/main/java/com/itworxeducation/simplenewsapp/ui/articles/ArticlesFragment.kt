@@ -9,14 +9,20 @@ import androidx.lifecycle.lifecycleScope
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Article
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
+import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import com.itworxeducation.simplenewsapp.data.source.remote.ApiGenerator
 import com.itworxeducation.simplenewsapp.data.source.remote.articles.ArticlesApi
 import com.itworxeducation.simplenewsapp.databinding.FragmentArticlesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
 import com.itworxeducation.simplenewsapp.ui.util.search.onQueryTextChanged
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
 
     private val TAG = "ArticlesFragment"
@@ -27,6 +33,11 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
     private var _binding: FragmentArticlesBinding? =null
     private val binding: FragmentArticlesBinding get() =_binding!!
 
+    @Inject
+    lateinit var sourceDao: SourceDao
+
+
+
     private var listAdapter:ArticlesAdapter?=null
 
     override fun onCreateView(
@@ -36,15 +47,19 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
     ): View? {
 
         _binding = FragmentArticlesBinding.inflate(inflater, container, false)
-setHasOptionsMenu(true)
+        setHasOptionsMenu(true)
+
+        lifecycleScope.launchWhenStarted {
+            sourceDao.getFavouriteCountry().collectLatest{
+                Log.d(TAG, "onCreateView: country = $it")
+            }
+        }
 
         initRecyclerView()
 
         val articlesApi = ApiGenerator.setupBaseApi(ArticlesApi::class.java)
         val articlesRepository = ArticlesRepository(articlesApi)
-
-        initViewModel(articlesRepository)
-        viewModel?.getArticles(country = "us", searchQuery = null)
+        fetchArticles(articlesRepository)
 
         return binding.root
     }
@@ -96,9 +111,11 @@ setHasOptionsMenu(true)
         }
     }
 
-    private fun initViewModel(articlesRepository: ArticlesRepository) {
+    private fun fetchArticles(articlesRepository: ArticlesRepository) {
 
         viewModel = ViewModelProvider(this, ViewModelFactory(articlesRepository))[ArticlesViewModel::class.java]
+        viewModel?.getArticles(country = "us", searchQuery = null)
+
     }
 
     private fun observeDataResult(){

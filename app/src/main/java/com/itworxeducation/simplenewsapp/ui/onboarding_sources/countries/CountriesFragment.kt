@@ -85,8 +85,9 @@ class CountriesFragment: BaseFragment(R.layout.fragment_countries) {
 
         val message = getString(R.string.select_country_confirm) + " $selectedCountry ?"
 
+
         val action = CountriesFragmentDirections.actionCountriesFragmentToConfirmationDialogFragment(
-            message, "country"
+            message, "country", countryName = selectedCountry
         )
 
         findNavController().navigate(action)

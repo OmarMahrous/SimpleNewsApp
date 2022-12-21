@@ -38,7 +38,7 @@ class CategoriesAdapter(
         fun bind(category: Category, position: Int) {
             binding.apply {
                 categoryName.text = category.name
-                categoryImage.setImageResource(category.image)
+                category.image?.let { categoryImage.setImageResource(it) }
 
                 categoryCardView.setOnClickListener {
                     updateSelectedView(this,position)
@@ -60,12 +60,12 @@ class CategoriesAdapter(
     private fun updateSelectedView(binding: CategoryListItemBinding, position: Int) {
         val category = getItem(position)
 
-        category.isSelected = !category.isSelected
+        category.isSelected = !category.isSelected!!
 
-        if (category.isSelected)
+        if (category.isSelected!!)
             binding.categoryImage.setImageResource(R.drawable.ic_selected)
         else
-            binding.categoryImage.setImageResource(category.image)
+            category.image?.let { binding.categoryImage.setImageResource(it) }
 
     }
 
@@ -73,7 +73,7 @@ class CategoriesAdapter(
         val selectedList = mutableListOf<Category>()
 
         for (category in currentList){
-            if (category.isSelected)
+            if (category.isSelected == true)
                 selectedList.add(category)
         }
         return selectedList.toList()

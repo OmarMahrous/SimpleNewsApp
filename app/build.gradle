@@ -60,6 +60,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
 
     // Lifecycle + ViewModel & LiveData
+//    implementation "android.arch.lifecycle:runtime:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
 //    implementation "android.arch.lifecycle:common-java8:2.3.0-alpha01"
@@ -100,8 +101,8 @@ dependencies {
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
-    kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
+//    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
+//    kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
 }
 
 kapt {

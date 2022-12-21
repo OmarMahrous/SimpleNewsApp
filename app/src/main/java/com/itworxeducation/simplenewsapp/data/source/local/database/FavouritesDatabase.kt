@@ -7,7 +7,7 @@ import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.articles.ArticleDao
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 
-@Database(entities = [Category::class, Article::class], version = 4)
+@Database(entities = [Category::class, Article::class], version = 8)
 abstract class FavouritesDatabase : RoomDatabase() {
 
     abstract fun articleDao(): ArticleDao

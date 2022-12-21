@@ -23,9 +23,20 @@
         <argument android:name="dialogMessage"
             app:nullable="false"
             app:argType="string" />
+
         <argument android:name="selectionName"
             app:argType="string"
             android:defaultValue="country"/>
+
+        <argument android:name="countryName"
+            app:argType="string"
+            android:defaultValue=""
+            app:nullable="true"/>
+
+        <argument android:name="selectedCategoryList"
+            app:argType="string"
+            android:defaultValue=""
+            app:nullable="true"/>
 
         <action android:id="@+id/action_confirmation_dialogfragment_to_categoriesFragment"
             app:destination="@id/categories_fragment"/>

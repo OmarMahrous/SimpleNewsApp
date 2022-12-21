@@ -1,12 +1,11 @@
 package com.itworxeducation.simplenewsapp.ui.articles
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itworxeducation.simplenewsapp.data.model.Article
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
+import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ArticlesViewModel constructor(
-    private val articlesRepository: ArticlesRepository
+    private val articlesRepository: ArticlesRepository,
 ) : ViewModel() {
 
     private val state = SavedStateHandle()
