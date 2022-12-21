@@ -13,6 +13,9 @@
         tools:layout="@layout/fragment_countries">
         <action android:id="@+id/action_countriesFragment_to_confirmationDialogFragment"
             app:destination="@id/confirmation_dialogfragment"/>
+
+        <action android:id="@id/action_confirmation_dialogfragment_to_articlesFragment"
+            app:destination="@id/articles_fragment"/>
     </fragment>
 
     <dialog

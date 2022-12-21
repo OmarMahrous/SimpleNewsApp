@@ -15,6 +15,7 @@ import com.itworxeducation.simplenewsapp.data.source.remote.ApiGenerator
 import com.itworxeducation.simplenewsapp.data.source.remote.onboarding.OnboardingSourcesApi
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.SourcesViewModel
 import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
+import com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dialog.ConfirmSelectionDialogFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        saveIsCalledFirstTime()
 
         setupScreensNavigation()
 
@@ -43,24 +43,26 @@ class MainActivity : AppCompatActivity() {
 
         fetchSources(sourcesRepository)
 
-
-
-//        lifecycleScope.launchWhenStarted {
-//            Log.d(TAG, "onCreate: isCalledFirstTime = ${viewModel.isCalledFirstTime()}")
-//        }
+        isCalledFirstTime()
 
     }
 
     /**
      * Check if the user opens the app on the first time.
      */
-    private fun saveIsCalledFirstTime(){
+    private fun isCalledFirstTime(){
         lifecycleScope.launchWhenStarted {
-            if(viewModel.isCalledFirstTime())
-                viewModel.saveIsCalledFirstTime(false)
+            if(!viewModel.isCalledFirstTime())
+                navigateToArticlesPage()
 
         }
     }
+
+    private fun navigateToArticlesPage() {
+        val action = ConfirmSelectionDialogFragmentDirections.actionConfirmationDialogfragmentToArticlesFragment()
+        navController.navigate(action)
+    }
+
 
 
     private fun setupScreensNavigation() {

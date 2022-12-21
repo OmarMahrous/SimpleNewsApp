@@ -2,6 +2,7 @@ package com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dia
 
 import androidx.lifecycle.ViewModel
 import com.itworxeducation.simplenewsapp.data.model.sources.Category
+import com.itworxeducation.simplenewsapp.data.source.local.PreferencesManager
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import com.itworxeducation.simplenewsapp.di.ApplicationScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,18 +18,23 @@ class ConfirmationDialogViewModel @Inject constructor(
      * because if user tapped on OK in the dialog fragment it will dismissed and its viewmodel will be lost from memory
      * and the deletion process will be cancelled also.
      **/
-//     private val applicationScope: CoroutineScope
+     @ApplicationScope private val applicationScope: CoroutineScope,
+    private val preferencesManager: PreferencesManager
 
 )    : ViewModel() {
 
 
 
-    fun confirmSelectCountry(countryName:String) = GlobalScope.launch {
+    fun confirmSelectCountry(countryName:String) = applicationScope.launch {
         sourceDao.addCountryToFavourites(countryName)
     }
 
-    fun confirmSelectCategories(category: Category) = GlobalScope.launch {
+    fun confirmSelectCategories(category: Category) = applicationScope.launch {
         sourceDao.addCategoryToFavourites(category)
+    }
+
+    fun setIsCalledFirstTime(isCalledFirstTime: Boolean) = applicationScope.launch {
+        preferencesManager.setIsCalledFirstTime(isCalledFirstTime)
     }
 
 }

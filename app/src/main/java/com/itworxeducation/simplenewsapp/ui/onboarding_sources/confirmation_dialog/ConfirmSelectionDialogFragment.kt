@@ -70,6 +70,7 @@ class ConfirmSelectionDialogFragment  : DialogFragment() {
                         navigateToCategoriesPage()}
                     else ->{
                         confirmSelectCategories()
+                        viewModel.setIsCalledFirstTime(false)
                         navigateToArticlesPage()
                     }
                 }
