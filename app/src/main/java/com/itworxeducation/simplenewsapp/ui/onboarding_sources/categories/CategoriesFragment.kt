@@ -5,12 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.itworxeducation.simplenewsapp.R
-import com.itworxeducation.simplenewsapp.data.model.Category
+import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.databinding.FragmentCategoriesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
 import com.itworxeducation.simplenewsapp.ui.onboarding_sources.GetSourcesEvent

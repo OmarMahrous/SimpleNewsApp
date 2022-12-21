@@ -2,13 +2,11 @@ package com.itworxeducation.simplenewsapp.ui.onboarding_sources
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itworxeducation.simplenewsapp.data.model.OnboardingSource
+import com.itworxeducation.simplenewsapp.data.model.sources.OnboardingSource
 import com.itworxeducation.simplenewsapp.data.repository.OnboardingSourcesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

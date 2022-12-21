@@ -1,8 +1,8 @@
 package com.itworxeducation.simplenewsapp.ui.util
 
 import com.itworxeducation.simplenewsapp.R
-import com.itworxeducation.simplenewsapp.data.model.Category
-import com.itworxeducation.simplenewsapp.data.model.OnboardingSource
+import com.itworxeducation.simplenewsapp.data.model.sources.Category
+import com.itworxeducation.simplenewsapp.data.model.sources.OnboardingSource
 
 class ListMapper {
 
@@ -24,7 +24,8 @@ class ListMapper {
 
             for (source in sources){
                 val categoryImage = createCustomImage(source.category)
-                val category =Category(source.id, source.category, categoryImage)
+                val category = Category(source.sid, source.category, categoryImage, countryName = "",
+                isSelected = false, catId = 0)
                 categoryList.add(category)
             }
 

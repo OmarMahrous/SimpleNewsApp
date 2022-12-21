@@ -66,7 +66,11 @@ setHasOptionsMenu(true)
         val searchView = searchItem.actionView as SearchView
 
         validateSearchInput(searchItem, searchView)
+
+
     }
+
+
 
     private fun validateSearchInput(searchItem: MenuItem, searchView: SearchView) {
         val pendingQuery = viewModel?.searchQuery?.value

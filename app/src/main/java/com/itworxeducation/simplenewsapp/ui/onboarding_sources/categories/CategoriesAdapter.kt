@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.itworxeducation.simplenewsapp.R
-import com.itworxeducation.simplenewsapp.data.model.Category
+import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.databinding.CategoryListItemBinding
 
 class CategoriesAdapter(
