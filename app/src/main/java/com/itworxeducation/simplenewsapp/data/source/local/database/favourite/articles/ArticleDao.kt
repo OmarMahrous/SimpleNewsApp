@@ -1,6 +1,7 @@
 package com.itworxeducation.simplenewsapp.data.source.local.database.favourite.articles
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.itworxeducation.simplenewsapp.data.model.Article
@@ -12,6 +13,8 @@ interface ArticleDao{
     @Insert
     suspend fun addArticleToFavourites(article: Article)
 
+    @Delete
+    suspend fun removeArticleFromFavourites(article: Article)
 
     fun getFavouritesArticles(searchQuery: String):Flow<List<Article>> =
         getArticlesSortedByDateCreated(searchQuery)

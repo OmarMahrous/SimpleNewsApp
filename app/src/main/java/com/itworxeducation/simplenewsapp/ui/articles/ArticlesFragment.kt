@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.itworxeducation.simplenewsapp.NewsApplication
@@ -24,11 +25,11 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
+class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleListener {
 
     private val TAG = "ArticlesFragment"
 
-    private var viewModel: ArticlesViewModel?=null
+    private val viewModel: ArticlesViewModel by viewModels()
 
 
     private var _binding: FragmentArticlesBinding? =null
@@ -66,7 +67,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
     }
 
     private fun initRecyclerView() {
-        listAdapter = context?.let { ArticlesAdapter(it) }
+        listAdapter = context?.let { ArticlesAdapter(it, this) }
         binding.articlesRecyclerview.adapter = listAdapter
     }
 
@@ -90,7 +91,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
 
 
     private fun validateSearchInput(searchItem: MenuItem, searchView: SearchView) {
-        val pendingQuery = viewModel?.searchQuery?.value
+        val pendingQuery = viewModel.searchQuery.value
 
         if (pendingQuery != null && pendingQuery.isNotEmpty()) {
             searchItem.expandActionView()
@@ -98,7 +99,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
         }
 
         searchView.onQueryTextChanged {
-            viewModel?.searchQuery?.value = it
+            viewModel.searchQuery.value = it
 
             getArticlesBySearch(it)
         }
@@ -108,20 +109,20 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
         lifecycleScope.launchWhenStarted {
             delay(2000)
 
-            viewModel?.getArticles(country = "us", searchQuery = query)
+            viewModel.getArticles(country = "us", searchQuery = query)
         }
     }
 
     private fun fetchArticles(articlesRepository: ArticlesRepository) {
 
-        viewModel = ViewModelProvider(this, ViewModelFactory(articlesRepository))[ArticlesViewModel::class.java]
-        viewModel?.getArticles(country = "us", searchQuery = null)
+        viewModel.setRepository(articlesRepository)
+        viewModel.getArticles(country = "us", searchQuery = null)
 
     }
 
     private fun observeDataResult(){
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel?.let {
+            viewModel.let {
                 it.articlesFlowEvent.collect{ event->
                     when(event){
                         is GetArticlesEvent.GetDataOnSuccess ->{
@@ -165,5 +166,18 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onSaveClick(isFavourite: Boolean, article: Article) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.let {
+                if (isFavourite)
+                    it.saveArticle(article)
+                else
+                    it.removeArticle(article)
+            }
+
+        }
+
     }
 }

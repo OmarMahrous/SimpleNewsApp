@@ -5,16 +5,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itworxeducation.simplenewsapp.data.model.Article
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
-import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
+import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.articles.ArticleDao
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ArticlesViewModel constructor(
-    private val articlesRepository: ArticlesRepository,
+@HiltViewModel
+class ArticlesViewModel @Inject constructor(
+    private val articleDao: ArticleDao
 ) : ViewModel() {
+
+    private lateinit var articlesRepository: ArticlesRepository
+
+    fun setRepository(articlesRepository: ArticlesRepository) {
+        this.articlesRepository = articlesRepository
+    }
 
     private val state = SavedStateHandle()
 
@@ -55,6 +64,10 @@ class ArticlesViewModel constructor(
     private suspend fun getData(articleList: List<Article>){
         _articlesChannelEvent.send(GetArticlesEvent.GetDataOnSuccess(articleList))
     }
+
+    suspend fun saveArticle(article: Article) = articleDao.addArticleToFavourites(article)
+
+    suspend fun removeArticle(article: Article) = articleDao.removeArticleFromFavourites(article)
 
 }
 

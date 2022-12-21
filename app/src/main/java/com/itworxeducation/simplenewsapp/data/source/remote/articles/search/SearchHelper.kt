@@ -6,9 +6,9 @@ class SearchHelper {
     companion object{
 
         fun searchArticle(input:String, articleList: List<Article>): List<Article> {
-            val filteredList = articleList.filter { article -> article.description.contains(input)
-                    || article.title.contains(input) || article.content.contains(input)
-                    || article.source.sname.contains(input)}
+            val filteredList = articleList.filter { article -> article.description!!.contains(input)
+                    || article.title!!.contains(input) || article.content!!.contains(input)
+                    || article.source!!.sname.contains(input)}
 
             return orderByDate(filteredList)
         }

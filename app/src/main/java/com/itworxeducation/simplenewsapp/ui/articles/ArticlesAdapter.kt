@@ -15,7 +15,8 @@ import com.itworxeducation.simplenewsapp.ui.util.UrlUtil
 import com.squareup.picasso.Picasso
 
 class ArticlesAdapter(
-    val context: Context
+    val context: Context,
+    val iSaveArticleListener: ISaveArticleListener
 ): ListAdapter<Article, ArticlesAdapter.ArticlesViewHolder>(DiffCallback()) {
 
     private  val TAG = "ArticlesAdapter"
@@ -62,7 +63,7 @@ class ArticlesAdapter(
         holder.bind(currentItem)
 
         holder.binding.articleCardView.setOnClickListener {
-            currentItem?.let { UrlUtil.openWebPage(context, it.url) }
+            currentItem?.let { item->item.url?.let { url -> UrlUtil.openWebPage(context, url) } }
 
         }
 
@@ -72,6 +73,7 @@ class ArticlesAdapter(
 
             updateSaveButtonIcon(isFavourite, holder.binding.saveArticle)
 
+            iSaveArticleListener.onSaveClick(isFavourite, currentItem)
         }
     }
 
@@ -92,7 +94,7 @@ class ArticlesAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<Article>() {
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-            return oldItem.source.sid == newItem.source.sid
+            return oldItem.source?.sid == newItem.source?.sid
         }
 
         override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
@@ -102,4 +104,8 @@ class ArticlesAdapter(
 
 
 
+}
+
+interface ISaveArticleListener{
+    fun onSaveClick(isFavourite: Boolean, article: Article)
 }
