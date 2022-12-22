@@ -19,4 +19,7 @@
     <string name="select_limit_error">"Can't select more than 3 categories"</string>
     <string name="confirm">Confirm</string>
     <string name="articles">Articles</string>
+    <string name="search">Search</string>
+    <string name="show_favourites">Show favourites</string>
+    <string name="fav_articles">Favourite articles</string>
 </resources>

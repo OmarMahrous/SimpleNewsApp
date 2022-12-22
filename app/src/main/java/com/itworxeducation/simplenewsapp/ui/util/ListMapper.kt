@@ -11,7 +11,7 @@ class ListMapper {
             val countryList = mutableListOf<String>()
 
             for (source in sources){
-                countryList.add(source.country)
+                source.country?.let { countryList.add(it) }
             }
 
             val uniqueItems = countryList.toSet().toList() // remove duplication
@@ -23,7 +23,7 @@ class ListMapper {
             val categoryList = mutableListOf<Category>()
 
             for (source in sources){
-                val categoryImage = createCustomImage(source.category)
+                val categoryImage = source.category?.let { createCustomImage(it) }
                 val category = Category(source.sid, source.category, categoryImage, countryName = "",
                 isSelected = false, catId = 0)
                 categoryList.add(category)

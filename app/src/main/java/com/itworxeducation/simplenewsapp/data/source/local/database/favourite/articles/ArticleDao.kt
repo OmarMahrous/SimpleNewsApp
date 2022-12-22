@@ -16,11 +16,11 @@ interface ArticleDao{
     @Delete
     suspend fun removeArticleFromFavourites(article: Article)
 
-    fun getFavouritesArticles(searchQuery: String):Flow<List<Article>> =
-        getArticlesSortedByDateCreated(searchQuery)
+    @Query("SELECT * FROM article_table")
+    fun getFavouritesArticles():Flow<List<Article>>
 
     @Query("SELECT * FROM article_table WHERE (title LIKE '%' || :searchQuery || '%' OR " +
             "description LIKE '%' || :searchQuery || '%'OR" +
             " author LIKE '%' || :searchQuery || '%') ORDER BY publishedAt")
-     fun getArticlesSortedByDateCreated(searchQuery: String): Flow<List<Article>>
+     fun getArticlesSortedByDateCreated(searchQuery: String=""): Flow<List<Article>>
 }

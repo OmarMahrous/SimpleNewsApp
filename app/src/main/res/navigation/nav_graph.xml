@@ -65,7 +65,16 @@
         android:label="@string/articles"
         tools:layout="@layout/fragment_articles">
 
+        <action android:id="@+id/action_articlesFragment_to_favouriteArticlesFragment"
+            app:destination="@id/favourite_articles_fragment"/>
+
     </fragment>
+
+    <fragment
+        android:id="@+id/favourite_articles_fragment"
+        android:name="com.itworxeducation.simplenewsapp.ui.articles.favourite.FavouriteArticlesFragment"
+        tools:layout="@layout/fragment_favourite_articles"
+        android:label="@string/fav_articles"/>
 
 
 </navigation>

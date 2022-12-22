@@ -6,6 +6,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.itworxeducation.simplenewsapp.NewsApplication
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Article
@@ -59,7 +60,6 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
 
         initRecyclerView()
 
-getFavouriteCountryAndCategories()
 
         return binding.root
     }
@@ -71,6 +71,8 @@ getFavouriteCountryAndCategories()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        getFavouriteCountryAndCategories()
 
         observeDataResult()
     }
@@ -197,10 +199,20 @@ getFavouriteCountryAndCategories()
             android.R.id.home->{
                 activity?.let { NewsApplication.exitApp(it) }
             }
+            R.id.action_show_favourites ->{
+                navigateToFavouriteArticlesPage()
+            }
         }
 
         return super.onOptionsItemSelected(item)
     }
+
+    private fun navigateToFavouriteArticlesPage(){
+        val action = ArticlesFragmentDirections.actionArticlesFragmentToFavouriteArticlesFragment()
+        findNavController().navigate(action)
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

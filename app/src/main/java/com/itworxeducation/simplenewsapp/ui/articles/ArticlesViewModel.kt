@@ -22,7 +22,6 @@ import javax.inject.Inject
 class ArticlesViewModel @Inject constructor(
     private val articleDao: ArticleDao,
     private val sourceDao: SourceDao,
-    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private lateinit var articlesRepository: ArticlesRepository
@@ -80,10 +79,6 @@ class ArticlesViewModel @Inject constructor(
 
 
     suspend fun getFavouriteCategories() = sourceDao.getFavouriteCategories()
-
-
-    private val preferencesFlow = preferencesManager.preferencesFlow
-
 
 }
 
