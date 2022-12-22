@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "category_table")
 data class Category(
      val id:String?, val name:String?, val image:Int?, var isSelected:Boolean?
-    ,@PrimaryKey(autoGenerate = true) val catId: Int
+    ,@PrimaryKey(autoGenerate = true) val catId: Int=0
 
-, @ColumnInfo(name = "CountryName") val countryName:String
+, @ColumnInfo(name = "CountryName") val countryName:String="eg"
 )

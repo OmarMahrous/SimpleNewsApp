@@ -5,23 +5,21 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.itworxeducation.simplenewsapp.NewsApplication
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.Article
+import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import com.itworxeducation.simplenewsapp.data.source.remote.ApiGenerator
 import com.itworxeducation.simplenewsapp.data.source.remote.articles.ArticlesApi
 import com.itworxeducation.simplenewsapp.databinding.FragmentArticlesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
-import com.itworxeducation.simplenewsapp.ui.ViewModelFactory
 import com.itworxeducation.simplenewsapp.ui.util.search.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,7 +36,9 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
     @Inject
     lateinit var sourceDao: SourceDao
 
-
+//    private var favouriteCountry="eg"
+//    private var defaultCategory=Category("", "general", 0, false, 0, "")
+//    private var favouriteCategoryList:MutableList<Category>?= mutableListOf(defaultCategory)
 
     private var listAdapter:ArticlesAdapter?=null
 
@@ -51,17 +51,15 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
         _binding = FragmentArticlesBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
-        lifecycleScope.launchWhenStarted {
-            sourceDao.getFavouriteCountry().collectLatest{
-                Log.d(TAG, "onCreateView: country = $it")
-            }
-        }
+//        lifecycleScope.launchWhenStarted {
+//            sourceDao.getFavouriteCountry().collectLatest{
+//                Log.d(TAG, "onCreateView: country = $it")
+//            }
+//        }
 
         initRecyclerView()
 
-        val articlesApi = ApiGenerator.setupBaseApi(ArticlesApi::class.java)
-        val articlesRepository = ArticlesRepository(articlesApi)
-        fetchArticles(articlesRepository)
+getFavouriteCountryAndCategories()
 
         return binding.root
     }
@@ -113,11 +111,52 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
         }
     }
 
-    private fun fetchArticles(articlesRepository: ArticlesRepository) {
+    /**
+     * Get articles by the selected country with the selected favorite categories
+     */
+    private fun fetchArticles(
+        favouriteCountry: String,
+        favouriteCategoryList: List<Category>?
+    ) {
+        val favouriteCategoryName = favouriteCategoryList?.get(0)?.name ?:""
 
+
+        val articlesApi = ApiGenerator.setupBaseApi(ArticlesApi::class.java)
+        val articlesRepository = ArticlesRepository(articlesApi)
         viewModel.setRepository(articlesRepository)
-        viewModel.getArticles(country = "us", searchQuery = null)
+        viewModel.getArticles(country = favouriteCountry, searchQuery = null,
+            category = favouriteCategoryName)
 
+
+        Log.i(TAG, "fetchArticles: favouriteCountry = ${favouriteCountry}")
+        Log.i(TAG, "fetchArticles: favouriteCategoryName = $favouriteCategoryName")
+    }
+
+
+
+    private fun getFavouriteCountryAndCategories(){
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+
+
+            val favouriteCountry = viewModel.getFavouriteCountry().await()
+
+
+//                Log.i(TAG, "getFavouriteCountryAndCategories: favouriteCountry = $favouriteCountry")
+
+//            viewModel.getFavouriteCategories().collect{
+//            favouriteCategoryList?.clear()
+            viewModel.getFavouriteCategories().collectLatest {
+
+                fetchArticles(favouriteCountry, it)
+                Log.i(TAG, "getFavouriteCountryAndCategories: favouriteCountry = $favouriteCountry," +
+                        "favouriteCategoryList = ${it.size}")
+            }
+//            }
+
+
+
+        }
     }
 
     private fun observeDataResult(){
@@ -126,13 +165,13 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
                 it.articlesFlowEvent.collect{ event->
                     when(event){
                         is GetArticlesEvent.GetDataOnSuccess ->{
-                            Log.i(TAG, "onViewCreated: sources size = ${event.articleList.size}")
+                            Log.i(TAG, "onViewCreated: articles size = ${event.articleList.size}")
 
 
                             updateUiListComponent(event.articleList)
                         }
                         is GetArticlesEvent.ShowMessageOnError ->
-                            Log.e(TAG, "onViewCreated: fail to load sources ${event.msg}")
+                            Log.e(TAG, "onViewCreated: fail to load articles ${event.msg}")
 
                         else -> Log.d(TAG, "onViewCreated: show loading")
                     }

@@ -5,10 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itworxeducation.simplenewsapp.data.model.Article
 import com.itworxeducation.simplenewsapp.data.repository.ArticlesRepository
+import com.itworxeducation.simplenewsapp.data.source.local.PreferencesManager
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.articles.ArticleDao
+import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,7 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
-    private val articleDao: ArticleDao
+    private val articleDao: ArticleDao,
+    private val sourceDao: SourceDao,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private lateinit var articlesRepository: ArticlesRepository
@@ -68,6 +74,16 @@ class ArticlesViewModel @Inject constructor(
     suspend fun saveArticle(article: Article) = articleDao.addArticleToFavourites(article)
 
     suspend fun removeArticle(article: Article) = articleDao.removeArticleFromFavourites(article)
+
+
+    suspend fun getFavouriteCountry() = viewModelScope.async(Dispatchers.IO) { sourceDao.getFavouriteCountry() }
+
+
+    suspend fun getFavouriteCategories() = sourceDao.getFavouriteCategories()
+
+
+    private val preferencesFlow = preferencesManager.preferencesFlow
+
 
 }
 

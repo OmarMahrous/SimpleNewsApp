@@ -2,6 +2,7 @@ package com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dia
 
 import androidx.lifecycle.ViewModel
 import com.itworxeducation.simplenewsapp.data.model.sources.Category
+import com.itworxeducation.simplenewsapp.data.model.sources.Country
 import com.itworxeducation.simplenewsapp.data.source.local.PreferencesManager
 import com.itworxeducation.simplenewsapp.data.source.local.database.favourite.onboarding.SourceDao
 import com.itworxeducation.simplenewsapp.di.ApplicationScope
@@ -26,11 +27,11 @@ class ConfirmationDialogViewModel @Inject constructor(
 
 
     fun confirmSelectCountry(countryName:String) = applicationScope.launch {
-        sourceDao.addCountryToFavourites(countryName)
+        sourceDao.addCountryToFavourites(Country(countryName))
     }
 
-    fun confirmSelectCategories(category: Category) = applicationScope.launch {
-        sourceDao.addCategoryToFavourites(category)
+    fun confirmSelectCategories(categoryList: List<Category>) = applicationScope.launch {
+        sourceDao.addCategoryToFavourites(categoryList)
     }
 
     fun setIsCalledFirstTime(isCalledFirstTime: Boolean) = applicationScope.launch {

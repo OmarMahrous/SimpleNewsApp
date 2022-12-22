@@ -15,13 +15,6 @@ class MainViewModel @Inject constructor(
 
     private val preferencesFlow = preferencesManager.preferencesFlow
 
-    fun saveIsCalledFirstTime(isCalledFirstTime:Boolean){
-        viewModelScope.launch {
-            preferencesManager.setIsCalledFirstTime(isCalledFirstTime)
-        }
-
-    }
-
     suspend fun isCalledFirstTime(): Boolean {
             return preferencesFlow.first().isCalledFirstTime
     }

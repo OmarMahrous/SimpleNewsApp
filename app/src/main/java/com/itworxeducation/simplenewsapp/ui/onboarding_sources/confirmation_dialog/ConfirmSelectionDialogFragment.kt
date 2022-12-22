@@ -2,6 +2,7 @@ package com.itworxeducation.simplenewsapp.ui.onboarding_sources.confirmation_dia
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -19,6 +20,8 @@ import java.lang.reflect.Type
  */
 @AndroidEntryPoint
 class ConfirmSelectionDialogFragment  : DialogFragment() {
+
+    private val TAG = "ConfirmSelectionDialogF"
 
     private val viewModel:ConfirmationDialogViewModel by viewModels()
 
@@ -82,10 +85,10 @@ class ConfirmSelectionDialogFragment  : DialogFragment() {
 
     private fun confirmSelectCategories(){
         selectedCategoryList?.let {
-            for (category in it){
-                viewModel.confirmSelectCategories(category)
-            }
+                viewModel.confirmSelectCategories(it)
         }
+
+        Log.d(TAG, "confirmSelectCategories: selectedCategoryList = ${selectedCategoryList?.size}")
     }
 
     private fun navigateToCategoriesPage() {
