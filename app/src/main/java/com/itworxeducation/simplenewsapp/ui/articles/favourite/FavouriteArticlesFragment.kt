@@ -115,8 +115,28 @@ class FavouriteArticlesFragment: BaseFragment(R.layout.fragment_articles), ISave
             listAdapter?.submitList(articleList)
 
         }
+
+        updateSaveIcon(articleList)
     }
 
+       /**
+        * Update every save icon of article in the favourite list that identify the article is favourite
+        */
+        private fun updateSaveIcon(articleList: List<Article>){
+
+           try {
+               articleList.forEachIndexed { index, article ->
+                   val viewHolder = binding.articlesRecyclerview.findViewHolderForAdapterPosition(index)
+                           as ArticlesAdapter.ArticlesViewHolder
+
+                   val saveIcon = viewHolder.binding.saveArticle
+                   saveIcon.setImageResource(R.drawable.ic_action_bookmark)
+               }
+           }catch (e:Exception){
+               e.printStackTrace()
+           }
+
+        }
 
 
     override fun onDestroyView() {
