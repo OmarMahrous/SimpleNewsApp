@@ -17,6 +17,7 @@ import com.itworxeducation.simplenewsapp.data.source.remote.ApiGenerator
 import com.itworxeducation.simplenewsapp.data.source.remote.articles.ArticlesApi
 import com.itworxeducation.simplenewsapp.databinding.FragmentArticlesBinding
 import com.itworxeducation.simplenewsapp.ui.BaseFragment
+import com.itworxeducation.simplenewsapp.ui.onboarding_sources.categories.CategoriesAdapter
 import com.itworxeducation.simplenewsapp.ui.util.search.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -37,11 +38,10 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
     @Inject
     lateinit var sourceDao: SourceDao
 
-//    private var favouriteCountry="eg"
-//    private var defaultCategory=Category("", "general", 0, false, 0, "")
-//    private var favouriteCategoryList:MutableList<Category>?= mutableListOf(defaultCategory)
 
     private var listAdapter:ArticlesAdapter?=null
+
+    private var favCategoryAdapter:CategoriesAdapter?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,22 +52,25 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
         _binding = FragmentArticlesBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
-//        lifecycleScope.launchWhenStarted {
-//            sourceDao.getFavouriteCountry().collectLatest{
-//                Log.d(TAG, "onCreateView: country = $it")
-//            }
-//        }
 
         initRecyclerView()
+        initFavCategoryRecyclerview()
 
 
         return binding.root
     }
 
+
     private fun initRecyclerView() {
         listAdapter = context?.let { ArticlesAdapter(it, this) }
         binding.articlesRecyclerview.adapter = listAdapter
     }
+
+    private fun initFavCategoryRecyclerview() {
+        favCategoryAdapter = context?.let { CategoriesAdapter(isFavourite=true) }
+        binding.favCategoriesRecyclerview.adapter = favCategoryAdapter
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,7 +123,9 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
         favouriteCountry: String,
         favouriteCategoryList: List<Category>?
     ) {
-        val favouriteCategoryName = favouriteCategoryList?.get(0)?.name ?:""
+        var favouriteCategoryName=""
+        if (!favouriteCategoryList.isNullOrEmpty())
+            favouriteCategoryName = favouriteCategoryList.get(0).name ?: ""
 
 
         val articlesApi = ApiGenerator.setupBaseApi(ArticlesApi::class.java)
@@ -140,25 +145,29 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
 
-
             val favouriteCountry = viewModel.getFavouriteCountry().await()
+            binding.favCountry.text = favouriteCountry
 
-
-//                Log.i(TAG, "getFavouriteCountryAndCategories: favouriteCountry = $favouriteCountry")
-
-//            viewModel.getFavouriteCategories().collect{
-//            favouriteCategoryList?.clear()
             viewModel.getFavouriteCategories().collectLatest {
 
                 fetchArticles(favouriteCountry, it)
-                Log.i(TAG, "getFavouriteCountryAndCategories: favouriteCountry = $favouriteCountry," +
-                        "favouriteCategoryList = ${it.size}")
+
+                updateFavCategoryListComponent(it)
+
             }
-//            }
-
-
 
         }
+    }
+
+    private fun updateFavCategoryListComponent(favCategoryList: List<Category>) {
+        binding.favCategoriesRecyclerview.apply {
+            if (adapter==null)
+                adapter = favCategoryAdapter
+
+            favCategoryAdapter?.submitList(favCategoryList)
+
+        }
+
     }
 
     private fun observeDataResult(){
@@ -170,7 +179,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
                             Log.i(TAG, "onViewCreated: articles size = ${event.articleList.size}")
 
 
-                            updateUiListComponent(event.articleList)
+                            updateArticleListUiComponent(event.articleList)
                         }
                         is GetArticlesEvent.ShowMessageOnError ->
                             Log.e(TAG, "onViewCreated: fail to load articles ${event.msg}")
@@ -183,7 +192,7 @@ class ArticlesFragment: BaseFragment(R.layout.fragment_articles), ISaveArticleLi
 
     }
 
-    private fun updateUiListComponent(articleList: List<Article>) {
+    private fun updateArticleListUiComponent(articleList: List<Article>) {
         binding.articlesRecyclerview.apply {
             if (adapter==null)
                 adapter = listAdapter

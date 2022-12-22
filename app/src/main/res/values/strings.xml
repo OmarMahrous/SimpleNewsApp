@@ -22,4 +22,6 @@
     <string name="search">Search</string>
     <string name="show_favourites">Show favourites</string>
     <string name="fav_articles">Favourite articles</string>
+    <string name="favourite_country">Favourite country:</string>
+    <string name="favourite_categories">Favourite categories</string>
 </resources>

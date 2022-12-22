@@ -45,7 +45,7 @@ class CategoriesFragment: BaseFragment(R.layout.fragment_categories) {
     }
 
     private fun initRecyclerView() {
-        listAdapter = CategoriesAdapter()
+        listAdapter = CategoriesAdapter(false)
         binding.categoriesRecyclerview.adapter = listAdapter
     }
 

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.itworxeducation.simplenewsapp.R
 import com.itworxeducation.simplenewsapp.data.model.sources.Category
 import com.itworxeducation.simplenewsapp.databinding.CategoryListItemBinding
+import com.itworxeducation.simplenewsapp.databinding.FavCategoryListItemBinding
 
-class CategoriesAdapter(
-    ) : ListAdapter<Category, CategoriesAdapter.CategoriesViewHolder>(DiffCallback()) {
+class CategoriesAdapter(val isFavourite: Boolean) : ListAdapter<Category, RecyclerView.ViewHolder>(DiffCallback()) {
 
     private  val TAG = "CategoriesAdapter"
 
@@ -21,16 +21,6 @@ class CategoriesAdapter(
 
         init {
             binding.apply {
-
-
-
-//                completedCheckbox.setOnClickListener {
-//                    val position = adapterPosition
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        val task = getItem(position)
-//                        listener.onCheckboxClick(task, completedCheckbox.isChecked)
-//                    }
-//                }
 
             }
         }
@@ -47,6 +37,21 @@ class CategoriesAdapter(
                 categoryName.setOnClickListener {
                     updateSelectedView(this,position)
                 }
+
+                executePendingBindings()
+            }
+        }
+
+
+    }
+
+    inner class FavouriteCategoriesViewHolder(val binding: FavCategoryListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+
+        fun bindFav(category: Category) {
+            binding.apply {
+                categoryName.text = category.name
 
                 executePendingBindings()
             }
@@ -79,16 +84,38 @@ class CategoriesAdapter(
         return selectedList.toList()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
-        val binding =
-            CategoryListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return CategoriesViewHolder(binding)
+        var viewHolder:RecyclerView.ViewHolder?=null
+
+        if (isFavourite){
+            val binding =
+                FavCategoryListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+            viewHolder = FavouriteCategoriesViewHolder(binding)
+        }else{
+            val binding =
+                CategoryListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+            viewHolder = CategoriesViewHolder(binding)
+        }
+
+
+
+        return viewHolder
     }
 
-    override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
-        val currentItem = getItem(position)
-        holder.bind(currentItem, position)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        if (isFavourite) {
+
+            val currentFavItem = getItem(position)
+            (holder as FavouriteCategoriesViewHolder).bindFav(currentFavItem)
+
+        }else{
+            val currentItem = getItem(position)
+            (holder as CategoriesViewHolder).bind(currentItem, position)
+        }
 
     }
 
